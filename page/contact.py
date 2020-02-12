@@ -44,16 +44,12 @@ class ContactPage(BasePage):
         department_change_button = (By.CSS_SELECTOR, '.ww_groupSelBtn_add.js_show_party_selector')
         # 部门修改页面确认按钮
         department_change_page_confirm_button = (By.LINK_TEXT, '确认')
-        # department_change_page_confirm_button = (By.CSS_SELECTOR, '.qui_btn.ww_btn.ww_btn_Blue.js_submit')
         # 职务输入框
         position_input_text = (By.CSS_SELECTOR, '.member_edit_item_right #memberAdd_title')
         # 底部确认按钮
         final_confirm_button = (By.LINK_TEXT, '保存')
 
-        add_member_button = (By.CSS_SELECTOR, '.ww_operationBar:nth-child(1) .js_add_member')
         WebDriverWait(self._driver, 10).until(self._wait_element)
-        # self.wait(10, expected_conditions.visibility_of_element_located(add_member_button))
-        # self.find(add_member_button).click()
         self.find(name_input_text).send_keys(name)
         self.find(smallname_input_text).send_keys(smallname)
         self.find(useraccount_input_text).send_keys(useraccount)
@@ -70,10 +66,47 @@ class ContactPage(BasePage):
         self.find(final_confirm_button).click()
 
     def _wait_element(self, d):
+        """
+        私有方法，用于循环点击添加成员按钮
+        """
         size = len(self._driver.find_elements(By.ID, 'username'))
         if size < 1:
             self.find((By.CSS_SELECTOR, '.ww_operationBar:nth-child(1) .js_add_member')).click()
         return size >= 1
+
+    def edit_member(self, edit_username):
+        """
+        编辑成员
+        :param edit_username:测试数据，需要修改的用户名
+        :return str 成员详情中显示的用户名
+        """
+        # 用户列表第一行的成员
+        first_user = (By.CSS_SELECTOR, '.js_list>:nth-child(1)')
+        # 编辑按钮
+        edit_button = (By.CSS_SELECTOR, '.js_edit')
+        # 用户名编辑框
+        username_edit = (By.NAME, 'username')
+        # 底部保存按钮
+        save_button = (By.CSS_SELECTOR, '.js_member_editor_form>div:nth-child(3)>a:nth-child(1)')
+
+        self.find(first_user).click()
+        self.find(edit_button).click()
+        self.find(username_edit).clear()
+        self.find(username_edit).send_keys(edit_username)
+        self.find(save_button).click()
+        return self.find((By.CSS_SELECTOR, '.member_display_cover_detail_name')).text
+
+    def get_contact_member_name(self):
+        """
+        获取通讯录第一行的成员姓名
+        :return str 成员姓名
+        """
+        # 用户列表第一行的用户名
+        first_user = (By.CSS_SELECTOR, '.js_list>:nth-child(1)>td:nth-child(2)')
+
+        # 获取title属性值（用户名）
+        first_username = self.find(first_user).get_attribute('title')
+        return first_username
 
     def get_contact_userlist(self):
         # todo 暂未实现获取通讯录列表信息
