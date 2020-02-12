@@ -4,6 +4,7 @@ from page.managetools import ManageTools
 class TestManageTools:
     """
     管理工具测试用例
+    todo 后期完善参数化构造测试用例
     """
 
     def setup(self):

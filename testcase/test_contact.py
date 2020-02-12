@@ -4,6 +4,7 @@ from page.contact import ContactPage
 class TestContact:
     """
     通讯录测试用例
+    todo 后期完善参数化构造测试用例
     """
 
     def setup(self):
